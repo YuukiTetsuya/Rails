@@ -1,15 +1,19 @@
 <DOCTYPE html>
 <html>
   <head>
-    <title><%= full_title(yield(:title)) %></title>
-    <%= render 'layouts/rails_default' %>
+    <title><%= full_title(yield(:title)) %></title>   <!-- full_titleヘルパーメソッドを読み出し、引数に各ビューから:titleに格納されたタイトルを渡している。-->
+    <%= render 'layouts/rails_default' %>             <!-- パーシャルを読み込む-->
     <%= render 'layouts/shim' %>
   </head>
   <body>
     <%= render 'layouts/header' %>
     <div class="container">
-      <%= yield %>
+      <% flash.each do |message_type, message| %>
+        <%= content_tag(:div, message, class: "alert alert-#{message_type}" ) %> <!-- ブロック変数に代入されてるflashメッセージを表示-->
+      <% end %>
+      <%= yield %>                                    <!-- コントローラで割り当てられたビューのページごと返す -->
       <%= render 'layouts/footer' %>
+      <%= debug(params) if Rails.env.development? %>  <!-- 開発環境時のみ、debugを表示 -->
     </div>
   </body>
 </html>

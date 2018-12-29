@@ -61,7 +61,7 @@ class UserTest < ActiveSupport::TestCase
   end
   
   test "password should have a minimum length" do                               #passwordとpassword_confirmationが最低6文字以上あるかどうか検証
-    @user.password = @user.password_confirmation = "a" * 5                      #二つの属性に"a"をを5個代入
+    @user.password = @user.password_confirmation = "a" * 5                      #二つの属性に"a"を5個代入
     assert_not @user.valid?                                                     #@userが有効なら失敗、無効なら成功
   end
 end
