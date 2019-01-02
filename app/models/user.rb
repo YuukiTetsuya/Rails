@@ -9,4 +9,11 @@ class User < ApplicationRecord
   
   has_secure_password                                                           #passwordとpassword_confirmation属性に存在性と値が一致するかどうかの検証が追加される
   validates :password, presence: true,length: { minimum: 6 }                    #passwordの文字列が空でなく、6文字以上ならtrue
+
+  #fixture用に、password_digestの文字列をハッシュ化して、ハッシュ値として返す
+  def User.digest(string)
+    cost = ActiveModel::SecurePassword.min_cost ? BCrypt::Engine::MIN_COST :
+                                                  BCrypt::Engine.cost
+    BCrypt::Password.create(string, cost: cost)
+  end
 end
