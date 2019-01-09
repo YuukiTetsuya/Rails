@@ -10,7 +10,7 @@ Railsで作った会員登録システム付きのアプリケーションです
 
 使用言語は Ruby/HTML/SCSS です。
 
-学習した内容をQiitaにまとめています。
+成果物を作るに当たって学習した内容をQiitaにまとめています。
 
 [Ruby on Rails チュートリアル全まとめ(解説・単語・演習)](https://qiita.com/yuuki_netb/items/c43a87eca6313ad1903f)
 
