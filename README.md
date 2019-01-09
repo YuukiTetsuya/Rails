@@ -6,7 +6,7 @@ Railsで作った会員登録システム付きのアプリケーションです
 ## Description
 
 使い方は簡単。
-「Sign up　now!」から新規登録するだけ。
+「Sign up now!」から新規登録するだけ。
 
 使用言語は Ruby/HTML/SCSS です。
 
