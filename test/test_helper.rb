@@ -21,11 +21,12 @@ class ActiveSupport::TestCase
 end
 
 class ActionDispatch::IntegrationTest
+  
   # 統合テスト用
   
   # テストユーザーとしてログインする
-  def log_in_as(user, password: 'password', remember_me: '1')                   # ログイン時のユーザーとして、チェックボックスにチェックを入れてる(1)
-    post login_path, params: { session: { email: user.email,                    # /login に対してparamsとしてsessionハッシュに各属性の値が入れて送信
+  def log_in_as(user, password:'password', remember_me: '1')                    # ログイン時のユーザーとして、チェックボックスにチェックを入れてる(1)
+    post login_path, params: { session: { email: user.email,
                                           password: password,
                                           remember_me: remember_me } }
   end

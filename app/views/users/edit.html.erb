@@ -1,0 +1,7 @@
+<% provide(:title, "Ebit user") %>
+<% provide(:url, user_path) %>
+<% provide(:button_text, "送信") %>
+<h1>プロフィールを更新する</h1>
+  <%= render 'form' %>
+  <%= gravatar_for @user %>
+  <a href="http://gravatar.com/emails" target="_blank" rel="noopener">編集</a>

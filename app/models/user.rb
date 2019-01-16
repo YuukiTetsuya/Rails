@@ -11,7 +11,7 @@ class User < ApplicationRecord
                     uniqueness: { case_sensitive: false }                       #大文字小文字を区別しない(false)に設定する　このオプションでは通常のuniquenessはtrueと判断する。
   
   has_secure_password                                                           #passwordとpassword_confirmation属性に存在性と値が一致するかどうかの検証が追加される
-  validates :password, presence: true,length: { minimum: 6 }                    #passwordの文字列が空でなく、6文字以上ならtrue
+  validates :password, presence: true,length: { minimum: 6 }, allow_nil: true   #passwordの文字列が空でなく、6文字以上ならtrue。例外処理に空(nil)の場合のみバリデーションを通す(true)
   
   # Userクラスに対して定義する
   

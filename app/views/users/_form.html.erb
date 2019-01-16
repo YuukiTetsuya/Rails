@@ -1,0 +1,29 @@
+    <!--ボタンと画像を表示-->
+
+    <div class="row">
+      <div class="col-md-6 col-md-offset-3">
+    <!-- formの送信先を指定 -->
+    
+    <%= form_for(@user, url: yield(:url)) do |f| %>                                               <!-- 、fブロックに代入-->
+      <%= render 'shared/error_messages', object: @user %>                      <!-- エラーメッセージ用のパーシャルを表示 -->
+
+    <!-- form作成-->
+    
+      <%= f.label :name %>                                                      <!-- Userモデルのname属性を設定 -->
+      <%= f.text_field :name, class: 'form-control' %>                          <!-- ラベル付きのテキストフィールド要素を作成 -->
+      
+      <%= f.label :email %>
+      <%= f.email_field :email, class: 'form-control' %>
+      
+      <%= f.label :password %>
+      <%= f.password_field :password, class: 'form-control' %>
+      
+      <%= f.label :password_confirmation, "Confirmation" %>
+      <%= f.password_field :password_confirmation, class: 'form-control' %>
+      
+    <!-- 送信ボタン-->
+      
+      <%= f.submit yield(:button_text), class: "btn btn-primary" %>
+    <% end %>
+      </div>
+    </div>

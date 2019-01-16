@@ -11,6 +11,11 @@ module SessionsHelper
     cookies.permanent.signed[:user_id] = user.id                                # ログイン時のユーザーidを、有効期限(20年)と署名付きの暗号化したユーザーidとしてcookiesに保存
     cookies.permanent[:remember_token] = user.remember_token                    # ログイン時の記憶トークンを、有効期限（20年）を設定して新たなremember_tokenに保存。Userモデルにて、ログインユーザーと同一ならtrueを返す
   end
+
+  # 渡されたユーザーがログイン済みユーザーであればtrueを返す  
+  def current_user?(user)
+    user == current_user
+  end
   
   # 記憶トークンcookieに対応するユーザーを返す
   def current_user
@@ -46,4 +51,15 @@ module SessionsHelper
     @current_user = nil                                                         # 現在のログインユーザーをnil（空に）する
   end
   
+  # 記憶したURL（もしくはデフォルト値）にリダイレクト
+  
+  def redirect_back_or(default)
+    redirect_to(session[:forwarding_url] || default)
+    session.delete(:forwarding_url)
+  end
+  
+  # アクセスしようとしたURLを覚えておく
+  def store_location
+    session[:forwarding_url] = request.original_url if request.get?             # :forwarding_urlキーにリクエスト先のURLを、GETリクエストが送られた時(読み込めた)だけ代入
+  end
 end
