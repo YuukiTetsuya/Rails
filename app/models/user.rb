@@ -1,17 +1,16 @@
 class User < ApplicationRecord
   # インスタンス変数の定義
-  attr_accessor :remember_token
+  attr_accessor :remember_token , :activation_token                             # 記憶トークンと有効化トークンを定義
+  before_save   :downcase_email                                                 # DB保存前にemailの値を小文字に変換する
+  before_create :create_activation_digest                                       # 作成前に適用
+  validates :name, presence: true, length: { maximum: 50 }                      # nameの文字列が空でなく、50文字以下ならtrue
+  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i                      # 正規表現でemailのフォーマットを策定し、定数に代入
+  validates :email, presence: true, length: { maximum: 255 },                   # emailの文字列が空でなく、255文字以下ならtrue
+                    format: { with: VALID_EMAIL_REGEX },                        # emailのフォーマットを引数に取ってフォーマット通りか検証する。
+                    uniqueness: { case_sensitive: false }                       # 大文字小文字を区別しない(false)に設定する　このオプションでは通常のuniquenessはtrueと判断する。
   
-  
-  before_save { email.downcase! }                                               #DB保存前にemailの値を小文字に変換する
-  validates :name, presence: true, length: { maximum: 50 }                      #nameの文字列が空でなく、50文字以下ならtrue
-  VALID_EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i                      #正規表現でemailのフォーマットを策定し、定数に代入
-  validates :email, presence: true, length: { maximum: 255 },                   #emailの文字列が空でなく、255文字以下ならtrue
-                    format: { with: VALID_EMAIL_REGEX },                        #emailのフォーマットを引数に取ってフォーマット通りか検証する。
-                    uniqueness: { case_sensitive: false }                       #大文字小文字を区別しない(false)に設定する　このオプションでは通常のuniquenessはtrueと判断する。
-  
-  has_secure_password                                                           #passwordとpassword_confirmation属性に存在性と値が一致するかどうかの検証が追加される
-  validates :password, presence: true,length: { minimum: 6 }, allow_nil: true   #passwordの文字列が空でなく、6文字以上ならtrue。例外処理に空(nil)の場合のみバリデーションを通す(true)
+  has_secure_password                                                           # passwordとpassword_confirmation属性に存在性と値が一致するかどうかの検証が追加される
+  validates :password, presence: true,length: { minimum: 6 }, allow_nil: true   # passwordの文字列が空でなく、6文字以上ならtrue。例外処理に空(nil)の場合のみバリデーションを通す(true)
   
   # Userクラスに対して定義する
   
@@ -47,4 +46,18 @@ class User < ApplicationRecord
     update_attribute(:remember_digest, nil)                                     # DBにある記憶ダイジェストをnilにする
   end
   
+private
+
+  # メールアドレスを全て小文字にする
+
+  def downcase_email
+    email.downcase!                                                             # emailを小文字化してUserオブジェクトのemail属性に代入
+  end
+  
+  # 有効化トークンとダイジェストを作成および代入する
+    
+  def create_activation_digest
+    self.activation_token   =   User.new_token                                  # ハッシュ化した記憶トークンを有効化トークン属性に代入
+    self.activation_digest  =   User.digest(activation_token)                   # 有効化トークンをBcryptで暗号化し、有効化ダイジェスト属性に代入
+  end
 end
