@@ -5,6 +5,10 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
   #   assert true
   # end
   
+  def setup
+    ActionMailer::Base.deliveries.clear                                         # Mailerファイルを初期化しユーザーをセットアップ
+  end
+  
   test "invalid signup information" do                                          # 新規登録が失敗（フォーム送信が）した時用のテスト
     get signup_path                                                             # ユーザー登録ページにアクセス
     assert_no_difference 'User.count' do                                        # User.countでユーザー数が変わっていなければ（ユーザー生成失敗）true,変わっていればfalse
@@ -20,7 +24,7 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
   
   end
   
-  test "valid signup information" do                                            # 新規登録が成功（フォーム送信）したかのテスト
+  test "valid signup information with account activation" do                    # 新規登録が成功（フォーム送信）したかのテスト
     get signup_path                                                             # signup_path(/signup)ユーザー登録ページにアクセス
     assert_difference 'User.count', 1 do                                        # User.countでユーザー数をカウント、1とし、ユーザー数が変わったらtrue、変わってなければfalse
       post users_path, params: { user: { name:                 "Example User",  # signup_path(/signup)からusers_path(/users)へparamsハッシュのuserハッシュの値を送れるか検証
@@ -28,12 +32,24 @@ class UsersSignupTest < ActionDispatch::IntegrationTest
                                         password:              "password",
                                         password_confirmation: "password" } }
     end
+    assert_equal 1, ActionMailer::Base.deliveries.size                          # Actionメイラーが1かどうか検証
+    user = assigns(:user)                                                       # usersコントローラの@userにアクセスし、userに代入
+    assert_not user.activated?                                                  # userが有効化されていればfalse、されていなければtrue
+    # 有効化していない状態でログインしてみる 
+    log_in_as(user)                                                             # 有効化されていないuserでログイン
+    assert_not is_logged_in?                                                    # 有効化されていなければtrue
+    # 有効化トークンが不正な場合
+    get edit_account_activation_path("invalid token", email: user.email)
+    assert_not is_logged_in?
+    # トークンは正しいがメールアドレスが無効な場合
+    get edit_account_activation_path(user.activation_token, email: 'wrong')
+    assert_not is_logged_in?
+    # 有効化トークンが正しい場合
+    get edit_account_activation_path(user.activation_token, email: user.email)
+    assert user.reload.activated?
     follow_redirect!                                                            # 指定されたリダイレクト先(users/show)へ飛べるか検証
     assert_template 'users/show'                                                # users/showが描画されているか確認
-    assert_not   flash.blank?                                                   # flashが空ならfalse,空じゃなければtrue
     assert is_logged_in?                                                        # 新規登録時にセッションが空じゃなければtrue
   end
-  
-
 
 end

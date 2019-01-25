@@ -4,11 +4,12 @@ class UsersController < ApplicationController
   before_action :admin_user,     only: :destroy
 
   def index
-    @users = User.paginate(page: params[:page])                                 # Userを取り出して分割した値を@usersに代入
+    @users = User.where(activated: true).paginate(page: params[:page])          # Userを取り出して分割した値を@usersに代入
   end
 
   def show
     @user = User.find(params[:id])                                              # paramsで:idパラメータを受け取る(/users/1にアクセスしたら1を受け取る)
+    redirect_to root_url and return unless @user.activated?                     # activatedがfalseならルートURLヘリダイレクト
   end
   
   def new
@@ -18,9 +19,9 @@ class UsersController < ApplicationController
   def create
     @user = User.new(user_params)                                               # newビューにて送ったformの中身(nameやemailの値)をuser_paramsで受け取り、ユーザーオブジェクトを生成、@userに代入
     if @user.save
-      log_in @user                                                              # log_inメソッド(ログイン)の引数として@user(ユーザーオブジェクト)を渡す。要はセッションに渡すってこと
-      flash[:success] = "ようこそYUUKIのサイトへ"                               # flashの:successシンボルに成功時のメッセージを代入
-      redirect_to @user                                                         #(user_url(@user)　つまり/users/idへ飛ばす(https://qiita.com/Kawanji01/items/96fff507ed2f75403ecb)を参考
+      @user.send_activation_email                                               # アカウント有効化メールの送信
+      flash[:info] = "メールを確認してアカウントを有効化してね"                 # アカウント有効化メッセージの表示
+      redirect_to root_url                                                      # ホームへ飛ばす
     else
       render 'new'
     end

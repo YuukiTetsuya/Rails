@@ -35,15 +35,26 @@ class User < ApplicationRecord
     update_attribute(:remember_digest, User.digest(remember_token))             # DBのremember_token属性値をBcryptに渡してハッシュ化して更新
   end
   
-  # 引数として受け取った値を記憶トークンに代入して暗号化（記憶ダイジェスト）し、DBにいるユーザーの記憶ダイジェストと比較、同一ならtrueを返す
-  def authenticated?(remember_token)
-    return false if remember_digest.nil?                                        # 記憶ダイジェストがnilの場合、falseを戻り値として返す(処理の中断)
-    BCrypt::Password.new(remember_digest).is_password?(remember_token)          # DBの記憶ダイジェストと、受け取った記憶トークンを記憶ダイジェストにした値を比較
+  # トークンがダイジェストと一致したらtrueを返す
+  def authenticated?(attribute, token)
+    digest = send("#{attribute}_digest")
+    return false if digest.nil?
+    BCrypt::Password.new(digest).is_password?(token)
   end
   
   # ユーザーのログイン情報を破棄する
   def forget
     update_attribute(:remember_digest, nil)                                     # DBにある記憶ダイジェストをnilにする
+  end
+  
+  # アカウントを有効にする
+  def activate
+    update_columns(activated: true, activated_at: Time.zone.now)
+  end
+  
+  # 有効化用のメールを送信する
+  def send_activation_email
+    UserMailer.account_activation(self).deliver_now
   end
   
 private
