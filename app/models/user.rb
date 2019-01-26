@@ -62,7 +62,7 @@ private
   # メールアドレスを全て小文字にする
 
   def downcase_email
-    email.downcase!                                                             # emailを小文字化してUserオブジェクトのemail属性に代入
+    self.email = email.downcase                                                 # emailを小文字化してUserオブジェクトのemail属性に代入
   end
   
   # 有効化トークンとダイジェストを作成および代入する
