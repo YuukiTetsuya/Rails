@@ -1,5 +1,5 @@
-こんにちは <%= @user.name %>,
+Hello <%= @user.name %>,
 
-YUUKIのポートフォリオへようこそ！下記リンクをクリックしたらあなたのアカウントは有効化されます♫:
+Welcome to portfolio of YUUKI.:
 
 <%= edit_account_activation_url(@user.activation_token, email: @user.email) %>
