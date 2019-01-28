@@ -1,6 +1,6 @@
 class User < ApplicationRecord
   # インスタンス変数の定義
-  attr_accessor :remember_token , :activation_token                             # 記憶トークンと有効化トークンを定義
+  attr_accessor :remember_token , :activation_token, :reset_token               # 記憶トークン、有効化トークン、レセットトークンを定義
   before_save   :downcase_email                                                 # DB保存前にemailの値を小文字に変換する
   before_create :create_activation_digest                                       # 作成前に適用
   validates :name, presence: true, length: { maximum: 50 }                      # nameの文字列が空でなく、50文字以下ならtrue
@@ -55,6 +55,22 @@ class User < ApplicationRecord
   # 有効化用のメールを送信する
   def send_activation_email
     UserMailer.account_activation(self).deliver_now
+  end
+  
+  # パスワード再設定の属性を設定する
+  def create_reset_digest
+    self.reset_token = User.new_token
+    update_columns(reset_digest: User.digest(reset_token), reset_sent_at: Time.zone.now )
+  end
+  
+  # パスワード再設定のメールを送信する
+  def send_password_reset_email
+    UserMailer.password_reset(self).deliver_now
+  end
+  
+  # パスワード再設定の期限が切れている場合はtrueを返す
+  def password_reset_expired?
+    reset_sent_at < 2.hours.ago
   end
   
 private
