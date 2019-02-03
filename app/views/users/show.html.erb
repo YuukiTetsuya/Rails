@@ -3,9 +3,18 @@
     <aside class="col-md-4">
         <section class="user_info">
             <h1>
-                <%= gravatar_for @user %>      <!-- gravatar_forというヘルパーメソッドでユーザー(user)の画像を表示、@userで表示しているビューのユーザー情報を表示 -->
-                <%= @user.name %>              <!-- 表示しているビューのユーザーの名前(nmae)を表示-->
+                <%= gravatar_for @user %>                                       <!-- gravatar_forというヘルパーメソッドでユーザー(user)の画像を表示、@userで表示しているビューのユーザー情報を表示 -->
+                <%= @user.name %>                                               <!-- 表示しているビューのユーザーの名前(nmae)を表示-->
             </h1>
         </section>
     </aside>
+    <div class="col-md-8">
+        <% if @user.microposts.any? %>
+        <h3>Microposts (<%= @user.microposts.count %>)</h3>
+        <ol class="microposts">
+            <%= render @microposts %>
+        </ol>
+        <%= will_paginate @microposts %>
+        <% end %>
+    </div>
 </div>

@@ -73,7 +73,7 @@ class UsersControllerTest < ActionDispatch::IntegrationTest
   
   test "should not allow the not activated attribute" do
     log_in_as (@non_activated_user)                                             # 非有効化ユーザーでログイン
-    assert_not @non_activated_user.activated?                                        # 有効化でないことを検証
+    assert_not @non_activated_user.activated?                                   # 有効化でないことを検証
     get users_path                                                              # /usersを取得
     assert_select "a[href=?]", user_path(@non_activated_user), count: 0         # 非有効化ユーザーが表示されていないことを確認
     get user_path(@non_activated_user)                                          # 非有効化ユーザーidのページを取得

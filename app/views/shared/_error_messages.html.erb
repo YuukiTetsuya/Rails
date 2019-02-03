@@ -1,10 +1,10 @@
-<% if @user.errors.any? %>                                                      <!-- エラーメッセージが空だった（エラーを起こしていない)場合true -->
+<% if object.errors.any? %>                                                      <!-- オブジェクトのエラーメッセージが空だった（エラーを起こしていない)場合true -->
   <div id="error_explanation">
     <div class="alert alert-danger">
-      The form contains <%= pluralize(@user.errors.count, "error") %>.
+      The form contains <%= pluralize(object.errors.count, "error") %>.
     </div>
     <ul>
-      <%= @user.errors.full_messages.each do |msg| %>                           <!-- エラーメッセージの配列をブロック変数msgに繰り返し代入 -->
+      <%= object.errors.full_messages.each do |msg| %>                          <!-- エラーメッセージの配列をブロック変数msgに繰り返し代入 -->
       <li><%= msg %></li>                                                       <!-- ブロック変数msgを表示（エラー文の値を一つ一つ表示） -->
       <% end %>
     </ul>

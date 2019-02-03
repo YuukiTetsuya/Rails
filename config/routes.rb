@@ -11,4 +11,5 @@ Rails.application.routes.draw do
   resources :users                                                              # usersリソースをRESTfullな構造にするためのコード。
   resources :account_activations, only: [:edit]                                 # editアクションのみaccount_activationsリソースを適用
   resources :password_resets,     only: [:new, :create, :edit, :update]         # password再設定用のリソースを適用
+  resources :microposts,          only: [:create, :destroy]                     # micropostsリソースをcreateとdestroyアクションにのみ適用
 end

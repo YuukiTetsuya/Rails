@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  # 関連付け
+  has_many :microposts, dependent: :destroy
   # インスタンス変数の定義
   attr_accessor :remember_token , :activation_token, :reset_token               # 記憶トークン、有効化トークン、レセットトークンを定義
   before_save   :downcase_email                                                 # DB保存前にemailの値を小文字に変換する
@@ -71,6 +73,12 @@ class User < ApplicationRecord
   # パスワード再設定の期限が切れている場合はtrueを返す
   def password_reset_expired?
     reset_sent_at < 2.hours.ago
+  end
+  
+  # 試作feedの定義
+  # 完全な実装はユーザーをフォローするで行う
+  def feed
+    Micropost.where("user_id = ?", id)
   end
   
 private
