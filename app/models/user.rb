@@ -1,6 +1,16 @@
 class User < ApplicationRecord
   # 関連付け
   has_many :microposts, dependent: :destroy
+  # 1対多の関連付け
+  has_many :active_relationships, class_name:     "Relationship",
+                                  foreign_key:    "follower_id",
+                                  dependent:      :destroy
+  has_many :passive_relationships, class_name:    "Relationship",
+                                   foreign_key:   "followed_id",
+                                   dependent:     :destroy
+  # 多対多の関連付け
+  has_many :following,  through: :active_relationships,   source: :followed
+  has_many :followers,  through: :passive_relationships,  source: :follower
   # インスタンス変数の定義
   attr_accessor :remember_token , :activation_token, :reset_token               # 記憶トークン、有効化トークン、レセットトークンを定義
   before_save   :downcase_email                                                 # DB保存前にemailの値を小文字に変換する
@@ -75,10 +85,27 @@ class User < ApplicationRecord
     reset_sent_at < 2.hours.ago
   end
   
-  # 試作feedの定義
-  # 完全な実装はユーザーをフォローするで行う
+  # ユーザーのステータスフィードを渡す
   def feed
-    Micropost.where("user_id = ?", id)
+    following_ids = "SELECT followed_id FROM relationships
+                    WHERE follower_id = :user_id"
+    Micropost.where("user_id IN (#{following_ids})
+                    OR user_id = :user_id", user_id: id)
+  end
+  
+  # ユーザーをフォローする
+  def follow(other_user)
+    following << other_user
+  end
+  
+  # ユーザーをフォロー解除する
+  def unfollow(other_user)
+    active_relationships.find_by(followed_id: other_user.id).destroy
+  end
+  
+  # 現在のユーザーがフォローしてたらtrueを返す
+  def following?(other_user)
+    following.include?(other_user)
   end
   
 private
@@ -95,4 +122,5 @@ private
     self.activation_token   =   User.new_token                                  # ハッシュ化した記憶トークンを有効化トークン属性に代入
     self.activation_digest  =   User.digest(activation_token)                   # 有効化トークンをBcryptで暗号化し、有効化ダイジェスト属性に代入
   end
+  
 end
