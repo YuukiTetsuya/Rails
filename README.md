@@ -1,43 +1,20 @@
-# Ruby on Rails チュートリアルのサンプルアプリケーション
+# Rails App
 
-これは、次の教材で作られたサンプルアプリケーションです。   
-[*Ruby on Rails チュートリアル*](https://railstutorial.jp/)
-[Michael Hartl](http://www.michaelhartl.com/) 著
+Railsで作った会員登録システム付きのアプリケーションです。
+ログイン機能、Remember me機能を付けています。
 
-## ライセンス
+## Description
 
-[Ruby on Rails チュートリアル](https://railstutorial.jp/)内にある
-ソースコードはMITライセンスとBeerwareライセンスのもとで公開されています。
-詳細は [LICENSE.md](LICENSE.md) をご覧ください。
+使い方は簡単。
+「Sign up now!」から新規登録するだけ。
 
-## 使い方
+使用言語は Ruby/HTML/SCSS です。
 
-このアプリケーションを動かす場合は、まずはリポジトリを手元にクローンしてください。
-その後、次のコマンドで必要になる RubyGems をインストールします。
+成果物を作るに当たって学習した内容をQiitaにまとめています。
 
-```
-$ bundle install --without production
-```
-
-その後、データベースへのマイグレーションを実行します。
-
-```
-$ rails db:migrate
-```
-
-最後に、テストを実行してうまく動いているかどうか確認してください。
-
-```
-$ rails test
-```
-
-テストが無事に通ったら、Railsサーバーを立ち上げる準備が整っているはずです。
-
-```
-$ rails server
-```
-
-詳しくは、[*Ruby on Rails チュートリアル*](https://railstutorial.jp/)
-を参考にしてください。
+[Ruby on Rails チュートリアル全まとめ(解説・単語・演習)](https://qiita.com/yuuki_netb/items/c43a87eca6313ad1903f)
 
 
+## Author
+
+[Yuuki](https://github.com/YuukiTetsuya)
